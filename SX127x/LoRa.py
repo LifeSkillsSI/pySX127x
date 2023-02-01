@@ -82,12 +82,13 @@ class LoRa(object):
     verbose = True
     dio_mapping = [None] * 6          # store the dio mapping here
 
-    def __init__(self, verbose=True, do_calibration=False, calibration_freq=868):
+    def __init__(self, verbose=True, do_calibration=False, calibration_freq=433, 
+                coding_rate=CODING_RATE.CR4_8, bandwith=7, freq=433, spreading_factor=9):
         """ Init the object
         
         Send the device to sleep, read all registers, and do the calibration (if do_calibration=True)
         :param verbose: Set the verbosity True/False
-        :param calibration_freq: call rx_chain_calibration with this parameter. Default is 868
+        :param calibration_freq: call rx_chain_calibration with this parameter. Default is 433
         :param do_calibration: Call rx_chain_calibration, default is False.
         """
         self.verbose = verbose
@@ -123,6 +124,16 @@ class LoRa(object):
         # set the dio_ mapping by calling the two get_dio_mapping_* functions
         self.get_dio_mapping_1()
         self.get_dio_mapping_2()
+
+        lora.set_pa_config(pa_select=1, max_power=1, output_power=1)
+        lora.set_hop_period(0)
+        lora.set_modem_config_3(1, 1)
+        lora.set_rx_crc(False)
+
+        lora.set_coding_rate(CODING_RATE.CR4_8)
+        lora.set_bw(7)
+        lora.set_freq(433.0)
+        lora.set_spreading_factor(9)
 
 
     # Overridable functions:
@@ -231,9 +242,10 @@ class LoRa(object):
         payload_size = len(payload)
         self.set_payload_length(payload_size)
         
-        self.set_mode(MODE.STDBY)
-        base_addr = self.get_fifo_tx_base_addr()
-        self.set_fifo_addr_ptr(base_addr)
+        self.set_mode(MODE.TX)
+        #base_addr = self.get_fifo_tx_base_addr()
+        self.set_fifo_addr_ptr(0)
+        self.set_fifo_tx_base_addr(0)
         return self.spi.xfer([REG.LORA.FIFO | 0x80] + payload)[1:]
 
     def reset_ptr_rx(self):
@@ -826,7 +838,7 @@ class LoRa(object):
         """
         return 0x87 if pa_dac else 0x84
 
-    def rx_chain_calibration(self, freq=868.):
+    def rx_chain_calibration(self, freq=433.):
         """ Run the image calibration (see Semtech documentation section 4.2.3.8)
         :param freq: Frequency for the HF calibration
         :return: None
@@ -973,12 +985,12 @@ class LoRa2(object):
     verbose = True
     dio_mapping = [None] * 6          # store the dio mapping here
 
-    def __init__(self, verbose=True, do_calibration=False, calibration_freq=868):
+    def __init__(self, verbose=True, do_calibration=False, calibration_freq=433):
         """ Init the object
         
         Send the device to sleep, read all registers, and do the calibration (if do_calibration=True)
         :param verbose: Set the verbosity True/False
-        :param calibration_freq: call rx_chain_calibration with this parameter. Default is 868
+        :param calibration_freq: call rx_chain_calibration with this parameter. Default is 433
         :param do_calibration: Call rx_chain_calibration, default is False.
         """
         self.verbose = verbose
@@ -1122,9 +1134,10 @@ class LoRa2(object):
         payload_size = len(payload)
         self.set_payload_length(payload_size)
         
-        self.set_mode(MODE.STDBY)
-        base_addr = self.get_fifo_tx_base_addr()
-        self.set_fifo_addr_ptr(base_addr)
+        self.set_mode(MODE.TX)
+        #base_addr = self.get_fifo_tx_base_addr()
+        self.set_fifo_addr_ptr(0)
+        self.set_fifo_tx_base_addr(0)
         return self.spi.xfer([REG.LORA.FIFO | 0x80] + payload)[1:]
 
     def reset_ptr_rx(self):

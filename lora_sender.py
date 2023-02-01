@@ -101,7 +101,10 @@ args = parser.parse_args(lora) # configs in LoRaArgumentParser.py
 
 lora.set_mode(MODE.STDBY)
 lora.set_pa_config(pa_select=1)
-
+lora.set_coding_rate(CODING_RATE.CR4_8)
+lora.set_bw(7)
+lora.set_freq(433.0)
+lora.set_spreading_factor(9)
 
 assert(lora.get_agc_auto_on() == 1)
 
