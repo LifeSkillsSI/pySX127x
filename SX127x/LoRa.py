@@ -125,15 +125,15 @@ class LoRa(object):
         self.get_dio_mapping_1()
         self.get_dio_mapping_2()
 
-        lora.set_pa_config(pa_select=1, max_power=1, output_power=1)
-        lora.set_hop_period(0)
-        lora.set_modem_config_3(1, 1)
-        lora.set_rx_crc(False)
+        self.set_pa_config(pa_select=1, max_power=1, output_power=1)
+        self.set_hop_period(0)
+        self.set_modem_config_3(1, 1)
+        self.set_rx_crc(False)
 
-        lora.set_coding_rate(CODING_RATE.CR4_8)
-        lora.set_bw(7)
-        lora.set_freq(433.0)
-        lora.set_spreading_factor(9)
+        self.set_coding_rate(CODING_RATE.CR4_8)
+        self.set_bw(7)
+        self.set_freq(433.0)
+        self.set_spreading_factor(9)
 
 
     # Overridable functions:
