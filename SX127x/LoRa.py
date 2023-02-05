@@ -83,7 +83,7 @@ class LoRa(object):
     dio_mapping = [None] * 6          # store the dio mapping here
 
     def __init__(self, verbose=True, do_calibration=False, calibration_freq=433, 
-                coding_rate=CODING_RATE.CR4_8, bandwith=7, freq=433, spreading_factor=9):
+                coding_rate=CODING_RATE.CR4_8, bandwith=7, freq=433.0, spreading_factor=9):
         """ Init the object
         
         Send the device to sleep, read all registers, and do the calibration (if do_calibration=True)
@@ -130,10 +130,10 @@ class LoRa(object):
         self.set_modem_config_3(1, 1)
         self.set_rx_crc(False)
 
-        self.set_coding_rate(CODING_RATE.CR4_8)
-        self.set_bw(7)
-        self.set_freq(433.0)
-        self.set_spreading_factor(9)
+        self.set_coding_rate(coding_rate)
+        self.set_bw(bandwith)
+        self.set_freq(freq)
+        self.set_spreading_factor(spreading_factor)
 
 
     # Overridable functions:
